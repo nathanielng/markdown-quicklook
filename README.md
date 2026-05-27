@@ -1,18 +1,25 @@
-# MarkdownQuickLook
+# MarkdownQL
 
-A macOS QuickLook plugin that renders `.md` Markdown files as styled HTML instead of raw text.
+A macOS QuickLook extension that renders `.md` Markdown files as styled HTML instead of raw text. Press Space on any `.md` file in Finder to see a formatted preview.
 
 ## Features
 
 - Full GitHub Flavored Markdown (GFM) via [marked.js](https://marked.js.org/)
 - GitHub-style CSS with automatic light/dark mode
 - Tables, task lists, fenced code blocks, blockquotes, strikethrough
+- Standalone viewer app (double-click any `.md` file)
 - No external network requests — everything is bundled
+- No Xcode.app required — builds from the command line
 
-## Requirements
+## Prerequisites
 
-- macOS 12+ (arm64)
-- Xcode Command Line Tools (`xcode-select --install`)
+- **macOS 12+** (Apple Silicon / arm64)
+- **Xcode Command Line Tools** — provides `swiftc`, `codesign`, and macOS SDK
+  ```bash
+  xcode-select --install
+  ```
+- **curl** — downloads marked.js on first build (pre-installed on macOS)
+- **Internet connection** — only needed once for `make deps` to fetch marked.js
 
 ## Install
 
@@ -20,25 +27,22 @@ A macOS QuickLook plugin that renders `.md` Markdown files as styled HTML instea
 make install
 ```
 
-This compiles the plugin, ad-hoc signs it, copies it to `~/Library/QuickLook/`, and resets QuickLook.
+This compiles the app + extension, ad-hoc signs them, and copies `MarkdownQL.app` to `~/Applications/`.
 
-## Approve the Plugin (required once)
-
-macOS Gatekeeper blocks unsigned plugins. After installing, run:
+Then open the app once to register the QuickLook extension:
 
 ```bash
-make approve
-# → runs: sudo spctl --add ~/Library/QuickLook/MarkdownQuickLook.qlgenerator
+open ~/Applications/MarkdownQL.app
 ```
 
-Or do it manually in System Settings → Privacy & Security → (scroll down) → Allow Anyway.
+You may need to right-click → Open → "Open Anyway" on first launch (Gatekeeper warning for unsigned apps).
 
 ## Verify
 
-Check registration:
+Check the extension is registered:
 
 ```bash
-qlmanage -m plugins 2>&1 | grep -i "markdown\|daring"
+pluginkit -mDvvv -p com.apple.quicklook.preview | grep MarkdownQL
 ```
 
 Test a preview:
@@ -57,24 +61,18 @@ make uninstall
 
 ## Troubleshooting
 
-**If previews don't update after reinstalling:**
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed diagnostics.
+
+**Quick fixes:**
 
 ```bash
-make approve   # re-approve after each rebuild
-```
+# If preview doesn't update after rebuild
+killall quicklookd; qlmanage -r
+open ~/Applications/MarkdownQL.app
 
-Or run:
-
-```bash
-sudo spctl --add ~/Library/QuickLook/MarkdownQuickLook.qlgenerator
-killall quicklookd Finder
-```
-
-**If `make approve` fails with sudo error, run directly in your terminal** (not via Claude Code):
-
-```bash
-sudo spctl --add ~/Library/QuickLook/MarkdownQuickLook.qlgenerator
-qlmanage -r
+# If another extension is handling .md files
+pluginkit -mDvvv -p com.apple.quicklook.preview | grep -i markdown
+pluginkit -e ignore -i <competing-bundle-id>
 ```
 
 ## Development
@@ -83,3 +81,8 @@ qlmanage -r
 make clean build    # compile without installing
 make test           # build and test preview with sample.md
 ```
+
+## Documentation
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) — How the project works (beginner-friendly)
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) — Debugging guide and known issues
