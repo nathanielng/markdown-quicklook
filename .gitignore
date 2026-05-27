@@ -2,3 +2,4 @@ build/
 Resources/marked.min.js
 .DS_Store
 kiro-session-*.json
+archive/
