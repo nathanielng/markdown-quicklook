@@ -122,6 +122,26 @@ This allows JIT compilation that WKWebView requires for JavaScript execution. De
 
 ---
 
+## Problem: Markdown Renders as Raw Text (Partially or Fully)
+
+**Symptom:** QuickLook shows unformatted text with visible `\`` escapes, raw JS code at the bottom, or content starting mid-file.
+
+**Cause:** The markdown file contains a literal `</script>` tag (common in files with HTML examples). When the extension embeds markdown inside a `<script>` tag, the HTML parser sees `</script>` in the content and prematurely closes the script block. Everything after that point renders as raw text.
+
+**How to verify:**
+```bash
+grep -i '</script>' problematic-file.md
+```
+
+**Fix (already applied):** The extension escapes `</script>` → `<\/script>` before embedding. The `\/` is valid in JS and prevents the HTML parser from matching the closing tag. If you see this issue, ensure `PreviewProvider.swift` includes:
+```swift
+.replacingOccurrences(of: "</script>", with: "<\\/script>", options: .caseInsensitive)
+```
+
+**Note:** This only affects the QuickLook extension (which embeds markdown in a JS template literal inside `<script>` tags). The host app uses `JSContext` for server-side rendering and is not affected.
+
+---
+
 ## Problem: Changes Don't Take Effect After Rebuild
 
 **Symptom:** You rebuild and reinstall but the old behavior persists.
