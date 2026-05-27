@@ -111,7 +111,7 @@ private func render(url: URL) -> String {
         .replacingOccurrences(of: "\\", with: "\\\\")
         .replacingOccurrences(of: "`",  with: "\\`")
         .replacingOccurrences(of: "${", with: "\\${")
-
+        .replacingOccurrences(of: "</script>", with: "<\\/script>", options: .caseInsensitive)
     let title = htmlEscape(url.deletingPathExtension().lastPathComponent)
 
     // JS runs inside WKWebView — no restrictions here.
