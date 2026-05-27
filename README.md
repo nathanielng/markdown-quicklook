@@ -1,13 +1,14 @@
 # MarkdownQL
 
-A macOS QuickLook extension that renders `.md` Markdown files as styled HTML instead of raw text. Press Space on any `.md` file in Finder to see a formatted preview.
+A macOS QuickLook extension that renders `.md` and `.yaml` files with styled formatting instead of raw text. Press Space on any supported file in Finder to see a formatted preview.
 
 ## Features
 
 - Full GitHub Flavored Markdown (GFM) via [marked.js](https://marked.js.org/)
+- YAML syntax highlighting via [highlight.js](https://highlightjs.org/)
 - GitHub-style CSS with automatic light/dark mode
 - Tables, task lists, fenced code blocks, blockquotes, strikethrough
-- Standalone viewer app (double-click any `.md` file)
+- Standalone viewer app with 4 themes (including WCAG AA/AAA accessible options)
 - No external network requests — everything is bundled
 - No Xcode.app required — builds from the command line
 
