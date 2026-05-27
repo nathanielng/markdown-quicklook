@@ -1,0 +1,169 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #24292f;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.markdown-body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #1f2328;
+}
+
+h1 { font-size: 2em; padding-bottom: 0.3em; border-bottom: 1px solid #d0d7de; }
+h2 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 1px solid #d0d7de; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: #656d76; }
+
+/* Paragraphs */
+p { margin-top: 0; margin-bottom: 1em; }
+
+/* Links */
+a { color: #0969da; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Lists */
+ul, ol { margin-top: 0; margin-bottom: 1em; padding-left: 2em; }
+li { margin-top: 0.25em; }
+li > ul, li > ol { margin-top: 0.25em; margin-bottom: 0; }
+
+/* Task lists */
+input[type="checkbox"] { margin-right: 0.4em; vertical-align: middle; }
+li.task-list-item { list-style: none; margin-left: -1.5em; }
+
+/* Code */
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.875em;
+  background: rgba(175, 184, 193, 0.2);
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  color: inherit;
+}
+
+pre {
+  margin-top: 0;
+  margin-bottom: 1em;
+  overflow: auto;
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 1em 1.2em;
+  line-height: 1.45;
+}
+
+pre code {
+  font-size: 0.875em;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  white-space: pre;
+  word-break: normal;
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 0 0 1em 0;
+  padding: 0 1em;
+  color: #656d76;
+  border-left: 0.25em solid #d0d7de;
+}
+
+blockquote > :last-child { margin-bottom: 0; }
+
+/* Horizontal rule */
+hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 1.5em 0;
+  background-color: #d0d7de;
+  border: 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1em;
+  overflow: auto;
+  display: block;
+}
+
+th, td {
+  padding: 6px 13px;
+  border: 1px solid #d0d7de;
+}
+
+th {
+  font-weight: 600;
+  background: #f6f8fa;
+}
+
+tr:nth-child(even) td {
+  background: #f6f8fa;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #e6edf3;
+    background: #0d1117;
+  }
+
+  h1, h2, h3, h4, h5, h6 { color: #e6edf3; }
+  h6 { color: #7d8590; }
+
+  h1, h2 { border-bottom-color: #21262d; }
+
+  a { color: #58a6ff; }
+
+  code {
+    background: rgba(110, 118, 129, 0.4);
+  }
+
+  pre {
+    background: #161b22;
+  }
+
+  blockquote {
+    color: #7d8590;
+    border-left-color: #30363d;
+  }
+
+  hr { background-color: #21262d; }
+
+  th {
+    background: #161b22;
+  }
+
+  th, td {
+    border-color: #30363d;
+  }
+
+  tr:nth-child(even) td {
+    background: #161b22;
+  }
+}
