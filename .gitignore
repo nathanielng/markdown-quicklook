@@ -1,5 +1,6 @@
 build/
 Resources/marked.min.js
+Resources/highlight.min.js
 .DS_Store
 kiro-session-*.json
 archive/

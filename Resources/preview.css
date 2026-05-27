@@ -167,3 +167,24 @@ tr:nth-child(even) td {
     background: #161b22;
   }
 }
+
+/* highlight.js — GitHub-style syntax colors */
+.hljs { background: #f6f8fa; color: #24292f; }
+.hljs-attr { color: #0550ae; }
+.hljs-string { color: #0a3069; }
+.hljs-number { color: #0550ae; }
+.hljs-literal { color: #0550ae; }
+.hljs-comment { color: #6e7781; font-style: italic; }
+.hljs-meta { color: #6e7781; }
+.hljs-bullet { color: #0550ae; }
+
+@media (prefers-color-scheme: dark) {
+  .hljs { background: #161b22; color: #e6edf3; }
+  .hljs-attr { color: #79c0ff; }
+  .hljs-string { color: #a5d6ff; }
+  .hljs-number { color: #79c0ff; }
+  .hljs-literal { color: #79c0ff; }
+  .hljs-comment { color: #7d8590; font-style: italic; }
+  .hljs-meta { color: #7d8590; }
+  .hljs-bullet { color: #79c0ff; }
+}

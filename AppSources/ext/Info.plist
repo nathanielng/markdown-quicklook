@@ -34,7 +34,8 @@
             <array>
                 <string>net.daringfireball.markdown</string>
                 <string>public.markdown</string>
-                <!-- public.plain-text catches .md files when UTI trust is
+                <string>public.yaml</string>
+                <!-- public.plain-text catches .md/.yaml files when UTI trust is
                      absent (no notarization). Filter by extension in code. -->
                 <string>public.plain-text</string>
             </array>

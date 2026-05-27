@@ -63,7 +63,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         panel.message = "Open Markdown files"
         panel.prompt = "Open"
         // Filter to known markdown extensions
-        panel.allowedFileTypes = ["md", "markdown", "mdown", "mkd", "mkdn"]
+        panel.allowedFileTypes = ["md", "markdown", "mdown", "mkd", "mkdn", "yaml", "yml"]
         if panel.runModal() == .OK {
             for url in panel.urls { openMarkdownFile(url) }
         }
@@ -199,11 +199,12 @@ class HTMLRenderer {
 
     private let jsContext: JSContext?
     private let css: String
+    private let hljsScript: String
 
     private init() {
-        // Load resources from our own bundle
         let bundle = Bundle.main
         css = HTMLRenderer.loadResource(bundle: bundle, name: "preview", ext: "css")
+        hljsScript = HTMLRenderer.loadResource(bundle: bundle, name: "highlight.min", ext: "js")
 
         guard let ctx = JSContext(),
               let js = HTMLRenderer.loadResourceOpt(bundle: bundle, name: "marked.min", ext: "js") else {
@@ -215,6 +216,7 @@ class HTMLRenderer {
     }
 
     func render(fileURL url: URL) -> String {
+        let ext = url.pathExtension.lowercased()
         let markdown: String
         if let s = try? String(contentsOf: url, encoding: .utf8) {
             markdown = s
@@ -224,8 +226,13 @@ class HTMLRenderer {
             markdown = "*Could not read file.*"
         }
 
-        let body = renderBody(markdown)
         let title = htmlEscape(url.deletingPathExtension().lastPathComponent)
+
+        if ["yaml", "yml"].contains(ext) {
+            return buildCodePage(title: title, code: markdown, language: "yaml")
+        }
+
+        let body = renderBody(markdown)
         return buildPage(title: title, body: body)
     }
 
@@ -260,6 +267,29 @@ class HTMLRenderer {
         <article class="markdown-body">
         \(body)
         </article>
+        </body>
+        </html>
+        """
+    }
+
+    private func buildCodePage(title: String, code: String, language: String) -> String {
+        """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>\(title)</title>
+        <style>
+        \(css)
+        </style>
+        </head>
+        <body>
+        <article class="markdown-body">
+        <pre><code class="language-\(language)">\(htmlEscape(code))</code></pre>
+        </article>
+        <script>\(hljsScript)</script>
+        <script>hljs.highlightAll();</script>
         </body>
         </html>
         """

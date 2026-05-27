@@ -25,18 +25,22 @@ class PreviewViewController: NSViewController, QLPreviewingController, WKNavigat
 
     // Called by QuickLook for file-based previews.
     func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
-        // Guard: only handle markdown extensions (we also catch public.plain-text)
         let ext = url.pathExtension.lowercased()
-        guard ["md","markdown","mdown","mkd","mkdn"].contains(ext) else {
+        let supportedMarkdown = ["md","markdown","mdown","mkd","mkdn"]
+        let supportedYAML = ["yaml","yml"]
+        guard supportedMarkdown.contains(ext) || supportedYAML.contains(ext) else {
             handler(nil)
             return
         }
 
         self.completionHandler = handler
-        let html = render(url: url)
-        // baseURL lets WKWebView resolve relative paths in the document
+        let html: String
+        if supportedYAML.contains(ext) {
+            html = renderCode(url: url, language: "yaml")
+        } else {
+            html = render(url: url)
+        }
         webView.loadHTMLString(html, baseURL: url.deletingLastPathComponent())
-        // Signal ready only after WKWebView finishes rendering (see WKNavigationDelegate methods)
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -51,6 +55,42 @@ class PreviewViewController: NSViewController, QLPreviewingController, WKNavigat
 }
 
 // MARK: - Rendering
+
+private func renderCode(url: URL, language: String) -> String {
+    let content: String
+    if let s = try? String(contentsOf: url, encoding: .utf8) {
+        content = s
+    } else if let s = try? String(contentsOf: url, encoding: .isoLatin1) {
+        content = s
+    } else {
+        content = "Could not read file."
+    }
+
+    let bundle = Bundle(for: PreviewViewController.self)
+    let css = resource(bundle: bundle, name: "preview", ext: "css")
+    let hljsJS = resource(bundle: bundle, name: "highlight.min", ext: "js")
+    let title = htmlEscape(url.lastPathComponent)
+    let escaped = htmlEscape(content)
+
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>\(title)</title>
+    <style>\(css)</style>
+    </head>
+    <body>
+    <article class="markdown-body">
+    <pre><code class="language-\(language)">\(escaped)</code></pre>
+    </article>
+    <script>\(hljsJS)</script>
+    <script>hljs.highlightAll();</script>
+    </body>
+    </html>
+    """
+}
 
 private func render(url: URL) -> String {
     let markdown: String

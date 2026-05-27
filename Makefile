@@ -16,16 +16,23 @@ SWIFT   = swiftc
 SWIFT_FLAGS = -sdk $(SDK) -target $(TARGET)
 
 MARKED_URL = https://cdn.jsdelivr.net/npm/marked/marked.min.js
+HLJS_URL   = https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
+HLJS_YAML  = https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js
 
 .PHONY: all deps build install uninstall test clean
 
 all: build
 
-deps: Resources/marked.min.js
+deps: Resources/marked.min.js Resources/highlight.min.js
 
 Resources/marked.min.js:
 	curl -fsSL "$(MARKED_URL)" -o Resources/marked.min.js
 	@echo "Downloaded marked.min.js ($$(wc -c < Resources/marked.min.js | tr -d ' ') bytes)"
+
+Resources/highlight.min.js:
+	curl -fsSL "$(HLJS_URL)" -o Resources/highlight.min.js
+	curl -fsSL "$(HLJS_YAML)" >> Resources/highlight.min.js
+	@echo "Downloaded highlight.min.js ($$(wc -c < Resources/highlight.min.js | tr -d ' ') bytes)"
 
 build: deps
 	# --- Extension binary ---
@@ -42,8 +49,9 @@ build: deps
 	  AppSources/ext/PreviewProvider.swift \
 	  -o $(EXT_PATH)/Contents/MacOS/$(EXT_NAME)
 	cp AppSources/ext/Info.plist $(EXT_PATH)/Contents/Info.plist
-	cp Resources/marked.min.js   $(EXT_PATH)/Contents/Resources/
-	cp Resources/preview.css     $(EXT_PATH)/Contents/Resources/
+	cp Resources/marked.min.js      $(EXT_PATH)/Contents/Resources/
+	cp Resources/highlight.min.js   $(EXT_PATH)/Contents/Resources/
+	cp Resources/preview.css        $(EXT_PATH)/Contents/Resources/
 
 	# --- Host app binary ---
 	@mkdir -p $(APP_PATH)/Contents/MacOS
@@ -55,8 +63,9 @@ build: deps
 	  AppSources/app/AppMain.swift \
 	  -o $(APP_PATH)/Contents/MacOS/$(APP_NAME)
 	cp AppSources/app/Info.plist  $(APP_PATH)/Contents/Info.plist
-	cp Resources/marked.min.js    $(APP_PATH)/Contents/Resources/
-	cp Resources/preview.css      $(APP_PATH)/Contents/Resources/
+	cp Resources/marked.min.js       $(APP_PATH)/Contents/Resources/
+	cp Resources/highlight.min.js    $(APP_PATH)/Contents/Resources/
+	cp Resources/preview.css         $(APP_PATH)/Contents/Resources/
 
 	# --- Sign (ad-hoc with entitlements) ---
 	codesign --force --sign - \

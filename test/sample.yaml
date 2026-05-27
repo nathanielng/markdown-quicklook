@@ -1,0 +1,18 @@
+# Sample YAML configuration
+name: MarkdownQL
+version: 1.0.0
+description: macOS QuickLook extension for Markdown
+
+features:
+  - GitHub Flavored Markdown
+  - Syntax highlighting
+  - Dark mode support
+
+build:
+  target: arm64-apple-macosx12.0
+  signing: ad-hoc
+  requires_xcode: false
+
+supported_extensions:
+  markdown: [md, markdown, mdown, mkd, mkdn]
+  yaml: [yaml, yml]

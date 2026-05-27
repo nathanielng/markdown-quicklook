@@ -47,6 +47,21 @@
                 <string>mkdn</string>
             </array>
         </dict>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>CFBundleTypeName</key>
+            <string>YAML Document</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.yaml</string>
+            </array>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>yaml</string>
+                <string>yml</string>
+            </array>
+        </dict>
     </array>
 
     <key>UTImportedTypeDeclarations</key>
