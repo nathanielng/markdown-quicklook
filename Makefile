@@ -66,6 +66,7 @@ build: deps
 	cp Resources/marked.min.js       $(APP_PATH)/Contents/Resources/
 	cp Resources/highlight.min.js    $(APP_PATH)/Contents/Resources/
 	cp Resources/preview.css         $(APP_PATH)/Contents/Resources/
+	cp Resources/themes/*.css        $(APP_PATH)/Contents/Resources/
 
 	# --- Sign (ad-hoc with entitlements) ---
 	codesign --force --sign - \

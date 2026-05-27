@@ -11,9 +11,41 @@ let delegate = AppDelegate()
 app.delegate = delegate
 app.run()
 
+// MARK: - Theme
+
+enum Theme: Int, CaseIterable {
+    case githubLight = 0
+    case githubDark = 1
+    case a11yLight = 2
+    case a11yDark = 3
+
+    var displayName: String {
+        switch self {
+        case .githubLight: return "GitHub Light"
+        case .githubDark:  return "GitHub Dark"
+        case .a11yLight:   return "a11y Light (AA)"
+        case .a11yDark:    return "a11y Dark (AAA)"
+        }
+    }
+
+    var filename: String {
+        switch self {
+        case .githubLight: return "github-light"
+        case .githubDark:  return "github-dark"
+        case .a11yLight:   return "a11y-light"
+        case .a11yDark:    return "a11y-dark"
+        }
+    }
+
+    static var current: Theme {
+        get { Theme(rawValue: UserDefaults.standard.integer(forKey: "theme")) ?? .githubLight }
+        set { UserDefaults.standard.set(newValue.rawValue, forKey: "theme") }
+    }
+}
+
 // MARK: - App Delegate
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     var windowControllers: [MarkdownWindowController] = []
 
@@ -137,7 +169,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
+        // View menu — theme picker
+        let viewItem = NSMenuItem(title: "View", action: nil, keyEquivalent: "")
+        let viewMenu = NSMenu(title: "View")
+        let themeItem = NSMenuItem(title: "Theme", action: nil, keyEquivalent: "")
+        let themeMenu = NSMenu(title: "Theme")
+        for theme in Theme.allCases {
+            let item = NSMenuItem(title: theme.displayName, action: #selector(changeTheme(_:)), keyEquivalent: "")
+            item.tag = theme.rawValue
+            themeMenu.addItem(item)
+        }
+        themeItem.submenu = themeMenu
+        viewMenu.addItem(themeItem)
+        viewItem.submenu = viewMenu
+        mainMenu.addItem(viewItem)
+
         NSApp.mainMenu = mainMenu
+    }
+
+    @objc func changeTheme(_ sender: NSMenuItem) {
+        guard let theme = Theme(rawValue: sender.tag) else { return }
+        Theme.current = theme
+        for wc in windowControllers { wc.reload() }
+    }
+
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        if menuItem.action == #selector(changeTheme(_:)) {
+            menuItem.state = menuItem.tag == Theme.current.rawValue ? .on : .off
+        }
+        return true
     }
 }
 
@@ -187,8 +247,11 @@ class MarkdownWindowController: NSWindowController, NSWindowDelegate {
 
     private func loadFile() {
         let html = HTMLRenderer.shared.render(fileURL: fileURL)
-        // Use baseURL of file's directory so relative links in the markdown resolve
         webView.loadHTMLString(html, baseURL: fileURL.deletingLastPathComponent())
+    }
+
+    func reload() {
+        loadFile()
     }
 }
 
@@ -198,12 +261,16 @@ class HTMLRenderer {
     static let shared = HTMLRenderer()
 
     private let jsContext: JSContext?
-    private let css: String
     private let hljsScript: String
+
+    private var css: String {
+        let bundle = Bundle.main
+        return HTMLRenderer.loadResourceOpt(bundle: bundle, name: Theme.current.filename, ext: "css")
+            ?? HTMLRenderer.loadResource(bundle: bundle, name: "preview", ext: "css")
+    }
 
     private init() {
         let bundle = Bundle.main
-        css = HTMLRenderer.loadResource(bundle: bundle, name: "preview", ext: "css")
         hljsScript = HTMLRenderer.loadResource(bundle: bundle, name: "highlight.min", ext: "js")
 
         guard let ctx = JSContext(),
