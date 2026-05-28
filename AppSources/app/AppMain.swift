@@ -98,6 +98,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         if let wc = NSApp.keyWindow?.windowController as? MarkdownWindowController { wc.printContent() }
     }
 
+    @objc func saveAsHTML(_ sender: Any?) {
+        guard let wc = NSApp.keyWindow?.windowController as? MarkdownWindowController else { return }
+        let panel = NSSavePanel()
+        panel.allowedFileTypes = ["html"]
+        panel.nameFieldStringValue = wc.fileURL.deletingPathExtension().lastPathComponent + ".html"
+        if panel.runModal() == .OK, let url = panel.url {
+            let html = HTMLRenderer.shared.render(fileURL: wc.fileURL)
+            try? html.write(to: url, atomically: true, encoding: .utf8)
+        }
+    }
+
     // MARK: - Helpers
 
     func openMarkdownFile(_ url: URL) {
@@ -185,6 +196,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         let fileMenu = NSMenu(title: "File")
         fileMenu.addItem(NSMenuItem(title: "Open…", action: #selector(openDocument(_:)), keyEquivalent: "o"))
         fileMenu.addItem(.separator())
+        fileMenu.addItem(NSMenuItem(title: "Save as HTML…", action: #selector(saveAsHTML(_:)), keyEquivalent: "S"))
         fileMenu.addItem(NSMenuItem(title: "Print…", action: #selector(printDocument(_:)), keyEquivalent: "p"))
         fileMenu.addItem(.separator())
         fileMenu.addItem(NSMenuItem(title: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w"))
