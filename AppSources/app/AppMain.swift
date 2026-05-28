@@ -181,6 +181,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         }
         themeItem.submenu = themeMenu
         viewMenu.addItem(themeItem)
+        viewMenu.addItem(.separator())
+        viewMenu.addItem(NSMenuItem(title: "Zoom In", action: #selector(zoomIn(_:)), keyEquivalent: "+"))
+        viewMenu.addItem(NSMenuItem(title: "Zoom Out", action: #selector(zoomOut(_:)), keyEquivalent: "-"))
+        viewMenu.addItem(NSMenuItem(title: "Actual Size", action: #selector(zoomReset(_:)), keyEquivalent: "0"))
         viewItem.submenu = viewMenu
         mainMenu.addItem(viewItem)
 
@@ -191,6 +195,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         guard let theme = Theme(rawValue: sender.tag) else { return }
         Theme.current = theme
         for wc in windowControllers { wc.reload() }
+    }
+
+    @objc func zoomIn(_ sender: Any?) {
+        if let wc = NSApp.keyWindow?.windowController as? MarkdownWindowController { wc.zoom(by: 0.25) }
+    }
+    @objc func zoomOut(_ sender: Any?) {
+        if let wc = NSApp.keyWindow?.windowController as? MarkdownWindowController { wc.zoom(by: -0.25) }
+    }
+    @objc func zoomReset(_ sender: Any?) {
+        if let wc = NSApp.keyWindow?.windowController as? MarkdownWindowController { wc.setZoom(1.0) }
     }
 
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -252,6 +266,14 @@ class MarkdownWindowController: NSWindowController, NSWindowDelegate {
 
     func reload() {
         loadFile()
+    }
+
+    func zoom(by delta: CGFloat) {
+        webView.magnification = max(0.25, min(5.0, webView.magnification + delta))
+    }
+
+    func setZoom(_ level: CGFloat) {
+        webView.magnification = level
     }
 }
 
