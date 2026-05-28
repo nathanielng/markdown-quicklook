@@ -39,6 +39,27 @@ MarkdownQL uses the following open-source software:
 - **License:** MIT
 - **URL:** https://github.com/nordtheme/nord
 
+### Dracula
+
+- **Purpose:** Color palette for Dracula theme
+- **Author:** Zeno Rocha
+- **License:** MIT
+- **URL:** https://github.com/dracula/dracula-theme
+
+### Gruvbox
+
+- **Purpose:** Color palette for Gruvbox Dark theme
+- **Author:** Pavel Pertsev (morhetz)
+- **License:** MIT
+- **URL:** https://github.com/morhetz/gruvbox
+
+### Catppuccin
+
+- **Purpose:** Color palette for Catppuccin Mocha theme
+- **Author:** Catppuccin contributors
+- **License:** MIT
+- **URL:** https://github.com/catppuccin/catppuccin
+
 ---
 
 ## Full License Texts

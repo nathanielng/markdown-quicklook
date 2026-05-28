@@ -21,28 +21,37 @@ enum Theme: Int, CaseIterable {
     case solarizedLight = 4
     case solarizedDark = 5
     case nord = 6
+    case dracula = 7
+    case gruvboxDark = 8
+    case catppuccinMocha = 9
 
     var displayName: String {
         switch self {
-        case .githubLight:    return "GitHub Light"
-        case .githubDark:     return "GitHub Dark"
-        case .a11yLight:      return "a11y Light (AA)"
-        case .a11yDark:       return "a11y Dark (AAA)"
-        case .solarizedLight: return "Solarized Light"
-        case .solarizedDark:  return "Solarized Dark"
-        case .nord:           return "Nord"
+        case .githubLight:     return "GitHub Light"
+        case .githubDark:      return "GitHub Dark"
+        case .a11yLight:       return "a11y Light (AA)"
+        case .a11yDark:        return "a11y Dark (AAA)"
+        case .solarizedLight:  return "Solarized Light"
+        case .solarizedDark:   return "Solarized Dark"
+        case .nord:            return "Nord"
+        case .dracula:         return "Dracula"
+        case .gruvboxDark:     return "Gruvbox Dark"
+        case .catppuccinMocha: return "Catppuccin Mocha"
         }
     }
 
     var filename: String {
         switch self {
-        case .githubLight:    return "github-light"
-        case .githubDark:     return "github-dark"
-        case .a11yLight:      return "a11y-light"
-        case .a11yDark:       return "a11y-dark"
-        case .solarizedLight: return "solarized-light"
-        case .solarizedDark:  return "solarized-dark"
-        case .nord:           return "nord"
+        case .githubLight:     return "github-light"
+        case .githubDark:      return "github-dark"
+        case .a11yLight:       return "a11y-light"
+        case .a11yDark:        return "a11y-dark"
+        case .solarizedLight:  return "solarized-light"
+        case .solarizedDark:   return "solarized-dark"
+        case .nord:            return "nord"
+        case .dracula:         return "dracula"
+        case .gruvboxDark:     return "gruvbox-dark"
+        case .catppuccinMocha: return "catppuccin-mocha"
         }
     }
 
