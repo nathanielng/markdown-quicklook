@@ -212,32 +212,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
-        // View menu — theme picker
+        // View menu — themes + zoom
         let viewItem = NSMenuItem(title: "View", action: nil, keyEquivalent: "")
         let viewMenu = NSMenu(title: "View")
-        let themeItem = NSMenuItem(title: "Theme", action: nil, keyEquivalent: "")
-        let themeMenu = NSMenu(title: "Theme")
         // Accessible themes
         let accessLabel = NSMenuItem(title: "Accessible", action: nil, keyEquivalent: "")
         accessLabel.isEnabled = false
-        themeMenu.addItem(accessLabel)
+        viewMenu.addItem(accessLabel)
         for theme in Theme.allCases where theme.isAccessible {
             let item = NSMenuItem(title: "  \(theme.displayName)", action: #selector(changeTheme(_:)), keyEquivalent: "")
             item.tag = theme.rawValue
-            themeMenu.addItem(item)
+            viewMenu.addItem(item)
         }
-        themeMenu.addItem(.separator())
+        viewMenu.addItem(.separator())
         // Standard themes
         let stdLabel = NSMenuItem(title: "Standard", action: nil, keyEquivalent: "")
         stdLabel.isEnabled = false
-        themeMenu.addItem(stdLabel)
+        viewMenu.addItem(stdLabel)
         for theme in Theme.allCases where !theme.isAccessible {
             let item = NSMenuItem(title: "  \(theme.displayName)", action: #selector(changeTheme(_:)), keyEquivalent: "")
             item.tag = theme.rawValue
-            themeMenu.addItem(item)
+            viewMenu.addItem(item)
         }
-        themeItem.submenu = themeMenu
-        viewMenu.addItem(themeItem)
+        viewMenu.addItem(.separator())
+        viewMenu.addItem(NSMenuItem(title: "Next Theme", action: #selector(cycleTheme(_:)), keyEquivalent: "t"))
         viewMenu.addItem(.separator())
         viewMenu.addItem(NSMenuItem(title: "Zoom In", action: #selector(zoomIn(_:)), keyEquivalent: "+"))
         viewMenu.addItem(NSMenuItem(title: "Zoom Out", action: #selector(zoomOut(_:)), keyEquivalent: "-"))
@@ -251,6 +249,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     @objc func changeTheme(_ sender: NSMenuItem) {
         guard let theme = Theme(rawValue: sender.tag) else { return }
         Theme.current = theme
+        for wc in windowControllers { wc.reload() }
+    }
+
+    @objc func cycleTheme(_ sender: Any?) {
+        let all = Theme.allCases
+        let next = (Theme.current.rawValue + 1) % all.count
+        Theme.current = all[next]
         for wc in windowControllers { wc.reload() }
     }
 
