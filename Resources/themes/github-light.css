@@ -53,3 +53,19 @@ tr:nth-child(even) td { background: #f6f8fa; }
 .hljs-comment { color: #6e7781; font-style: italic; }
 .hljs-meta { color: #6e7781; }
 .hljs-bullet { color: #0550ae; }
+
+/* Print: force black text for crisp output */
+@media print {
+  body { color: #000; background: #fff; }
+  h1, h2, h3, h4, h5, h6 { color: #000; }
+  h6 { color: #333; }
+  a { color: #000; text-decoration: underline; }
+  code { background: #f0f0f0; }
+  pre { background: #f5f5f5; }
+  blockquote { color: #333; border-left-color: #999; }
+  th, td { border-color: #999; }
+  .hljs { background: #f5f5f5; color: #000; }
+  .hljs-attr { color: #00c; }
+  .hljs-string { color: #060; }
+  .hljs-comment { color: #555; }
+}
