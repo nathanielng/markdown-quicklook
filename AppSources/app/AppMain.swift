@@ -78,6 +78,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     @objc func openDocument(_ sender: Any?) { runOpenPanel() }
 
+    @objc func printDocument(_ sender: Any?) {
+        if let wc = NSApp.keyWindow?.windowController as? MarkdownWindowController { wc.printContent() }
+    }
+
     // MARK: - Helpers
 
     func openMarkdownFile(_ url: URL) {
@@ -164,6 +168,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         let fileItem = NSMenuItem(title: "File", action: nil, keyEquivalent: "")
         let fileMenu = NSMenu(title: "File")
         fileMenu.addItem(NSMenuItem(title: "Open…", action: #selector(openDocument(_:)), keyEquivalent: "o"))
+        fileMenu.addItem(.separator())
+        fileMenu.addItem(NSMenuItem(title: "Print…", action: #selector(printDocument(_:)), keyEquivalent: "p"))
         fileMenu.addItem(.separator())
         fileMenu.addItem(NSMenuItem(title: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w"))
         fileItem.submenu = fileMenu
@@ -274,6 +280,13 @@ class MarkdownWindowController: NSWindowController, NSWindowDelegate {
 
     func setZoom(_ level: CGFloat) {
         webView.magnification = level
+    }
+
+    func printContent() {
+        let info = NSPrintInfo.shared
+        info.topMargin = 36; info.bottomMargin = 36; info.leftMargin = 36; info.rightMargin = 36
+        let op = webView.printOperation(with: info)
+        op.runModal(for: window!, delegate: nil, didRun: nil, contextInfo: nil)
     }
 }
 
