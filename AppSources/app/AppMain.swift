@@ -18,22 +18,38 @@ enum Theme: Int, CaseIterable {
     case githubDark = 1
     case a11yLight = 2
     case a11yDark = 3
+    case solarizedLight = 4
+    case solarizedDark = 5
+    case nord = 6
 
     var displayName: String {
         switch self {
-        case .githubLight: return "GitHub Light"
-        case .githubDark:  return "GitHub Dark"
-        case .a11yLight:   return "a11y Light (AA)"
-        case .a11yDark:    return "a11y Dark (AAA)"
+        case .githubLight:    return "GitHub Light"
+        case .githubDark:     return "GitHub Dark"
+        case .a11yLight:      return "a11y Light (AA)"
+        case .a11yDark:       return "a11y Dark (AAA)"
+        case .solarizedLight: return "Solarized Light"
+        case .solarizedDark:  return "Solarized Dark"
+        case .nord:           return "Nord"
         }
     }
 
     var filename: String {
         switch self {
-        case .githubLight: return "github-light"
-        case .githubDark:  return "github-dark"
-        case .a11yLight:   return "a11y-light"
-        case .a11yDark:    return "a11y-dark"
+        case .githubLight:    return "github-light"
+        case .githubDark:     return "github-dark"
+        case .a11yLight:      return "a11y-light"
+        case .a11yDark:       return "a11y-dark"
+        case .solarizedLight: return "solarized-light"
+        case .solarizedDark:  return "solarized-dark"
+        case .nord:           return "nord"
+        }
+    }
+
+    var isAccessible: Bool {
+        switch self {
+        case .a11yLight, .a11yDark: return true
+        default: return false
         }
     }
 
@@ -180,8 +196,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         let viewMenu = NSMenu(title: "View")
         let themeItem = NSMenuItem(title: "Theme", action: nil, keyEquivalent: "")
         let themeMenu = NSMenu(title: "Theme")
-        for theme in Theme.allCases {
-            let item = NSMenuItem(title: theme.displayName, action: #selector(changeTheme(_:)), keyEquivalent: "")
+        // Accessible themes
+        let accessLabel = NSMenuItem(title: "Accessible", action: nil, keyEquivalent: "")
+        accessLabel.isEnabled = false
+        themeMenu.addItem(accessLabel)
+        for theme in Theme.allCases where theme.isAccessible {
+            let item = NSMenuItem(title: "  \(theme.displayName)", action: #selector(changeTheme(_:)), keyEquivalent: "")
+            item.tag = theme.rawValue
+            themeMenu.addItem(item)
+        }
+        themeMenu.addItem(.separator())
+        // Standard themes
+        let stdLabel = NSMenuItem(title: "Standard", action: nil, keyEquivalent: "")
+        stdLabel.isEnabled = false
+        themeMenu.addItem(stdLabel)
+        for theme in Theme.allCases where !theme.isAccessible {
+            let item = NSMenuItem(title: "  \(theme.displayName)", action: #selector(changeTheme(_:)), keyEquivalent: "")
             item.tag = theme.rawValue
             themeMenu.addItem(item)
         }
