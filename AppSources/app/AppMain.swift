@@ -253,8 +253,8 @@ class MarkdownWindowController: NSWindowController, NSWindowDelegate {
 
     private func setupWebView() {
         let config = WKWebViewConfiguration()
-        // Allow local file reads so we could also serve assets if needed
         webView = WKWebView(frame: .zero, configuration: config)
+        webView.allowsMagnification = true
         webView.translatesAutoresizingMaskIntoConstraints = false
         window!.contentView!.addSubview(webView)
         NSLayoutConstraint.activate([
